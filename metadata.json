@@ -1,0 +1,6 @@
+{
+  "name": "Visa Pro Technology (VPT)",
+  "description": "Professional immigration, visa, expatriate, and corporate legal services for international enterprises, investors, and foreign professionals in Indonesia.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

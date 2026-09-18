@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #FAF9F6;
+  --color-foreground: #1F2933;
+  --color-primary: #2D6A9F;
+  --color-primary-foreground: #FFFFFF;
+  --color-secondary: #EAF3FA;
+  --color-secondary-foreground: #173A5E;
+  --color-muted: #EAF3FA;
+  --color-muted-foreground: #5B6B7C;
+  --color-border: #E8EDF1;
+  --color-deep-blue: #173A5E;
+  --color-gold: #B99A5C;
+}
+
+@layer base {
+  :root {
+    --background: 40 20% 98%; /* #FAF9F6 */
+    --foreground: 210 24% 16%; /* #1F2933 */
+    --card: 0 0% 100%;
+    --card-foreground: 210 24% 16%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 24% 16%;
+    --primary: 207 56% 40%; /* #2D6A9F */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 207 58% 95%; /* #EAF3FA */
+    --secondary-foreground: 210 60% 23%; /* #173A5E */
+    --muted: 207 58% 95%; /* #EAF3FA */
+    --muted-foreground: 210 15% 42%;
+    --accent: 205 65% 92%; /* #DCECF7 */
+    --accent-foreground: 210 60% 23%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 206 20% 91%; /* #E8EDF1 */
+    --input: 206 20% 91%;
+    --ring: 207 56% 40%;
+    --gold: 39 38% 54%; /* #B99A5C */
+    --deep-blue: 210 60% 23%; /* #173A5E */
+    --radius: 0.75rem;
+  }
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #1F2933;
+  background-color: #FAF9F6;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+.font-serif-editorial {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+.font-sans-corporate {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
