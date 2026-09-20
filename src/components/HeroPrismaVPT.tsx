@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { ArrowRight, ShieldCheck, Building2, Sparkles } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Building2 } from 'lucide-react';
 import { Language } from '../types';
 import { GlobeFlights } from './ui/three-interactive-globe';
 
@@ -26,13 +26,13 @@ export const WordsPullUp = ({ text, className = "", showAsterisk = false, style 
             key={i}
             initial={{ y: 20, opacity: 0 }}
             animate={isInView ? { y: 0, opacity: 1 } : {}}
-            transition={{ duration: 0.6, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.5, delay: i * 0.05, ease: [0.16, 1, 0.3, 1] }}
             className="inline-block relative"
             style={{ marginRight: isLast ? 0 : "0.22em" }}
           >
             {word}
             {showAsterisk && isLast && (
-              <span className="absolute top-[0.05em] -right-[0.35em] text-[0.42em] text-[#C59B27] font-normal leading-none">*</span>
+              <span className="absolute top-[0.05em] -right-[0.35em] text-[0.42em] text-[#1F4E79] font-normal leading-none">*</span>
             )}
           </motion.span>
         );
@@ -60,11 +60,6 @@ export const HeroPrismaVPT: React.FC<HeroPrismaVPTProps> = ({
   onOpenCatalogWithCategory,
 }) => {
   const content = {
-    badge: {
-      EN: "CORPORATE LAW & IMMIGRATION COUNSEL • INDONESIA",
-      ID: "KONSULTAN HUKUM KORPORAT & KEIMIGRASIAN INDONESIA",
-      JP: "インドネシア企業法務・外国人就労ビザ顧問",
-    },
     headline: {
       EN: "VISA PRO",
       ID: "VISA PRO",
@@ -102,7 +97,6 @@ export const HeroPrismaVPT: React.FC<HeroPrismaVPTProps> = ({
     ]
   };
 
-  // Handler saat kartu micro-badge di globe diklik
   const handleSelectGlobeCategory = (categoryId: string, searchKeyword?: string) => {
     if (onOpenCatalogWithCategory) {
       onOpenCatalogWithCategory(categoryId, searchKeyword);
@@ -114,45 +108,34 @@ export const HeroPrismaVPT: React.FC<HeroPrismaVPTProps> = ({
   };
 
   return (
-    <section className="relative w-full bg-[#FBFBFA] text-[#191C1E] flex flex-col justify-between overflow-hidden pt-16 sm:pt-20 pb-0 transition-all">
-      
-      {/* 1. Subtle Elegant Ambient Warmth */}
-      <div className="absolute top-1/4 -left-48 w-96 h-96 bg-amber-200/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/3 -right-48 w-[500px] h-[500px] bg-blue-100/40 rounded-full blur-3xl pointer-events-none" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px] opacity-60" />
+    <section 
+      id="hero"
+      className="relative w-full min-h-[calc(100vh-2rem)] bg-[#FAFCFF] text-[#0A192F] flex flex-col justify-between overflow-hidden pt-28 sm:pt-32 lg:pt-36 pb-0 transition-all"
+    >
+      {/* 1. Ambient Lighting Layers */}
+      <div className="absolute top-10 right-0 sm:right-1/4 w-[320px] sm:w-[550px] lg:w-[700px] aspect-square bg-gradient-to-b from-[#1F4E79]/12 via-[#16425B]/5 to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
+      <div className="absolute top-1/3 -left-28 w-80 sm:w-96 aspect-square bg-[#2D6A9F]/10 rounded-full blur-3xl pointer-events-none -z-10" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#94a3b8_1px,transparent_1px)] [background-size:24px_24px] sm:[background-size:28px_28px] opacity-25 -z-10" />
 
-      {/* 2. Main Hero Grid: Left Content + Right 3D Cobe Globe */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-0 pb-6 sm:pb-10">
-        <div className="grid grid-cols-12 gap-8 lg:gap-14 items-center">
+      {/* 2. Main Hero Grid */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-auto pb-8 sm:pb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 xl:gap-14 items-center">
           
-          {/* Left Column: Branding & Direct Action */}
-          <div className="col-span-12 lg:col-span-7 flex flex-col justify-center">
+          {/* Left Column: Teks & Aksi */}
+          <div className="lg:col-span-7 flex flex-col justify-center text-center lg:text-left items-center lg:items-start">
             
-            {/* Regulatory Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-200/80 text-amber-900 text-[11px] sm:text-xs font-semibold tracking-widest uppercase mb-3.5 self-start shadow-xs"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-[#C59B27]" />
-              <span>{content.badge[currentLang]}</span>
-            </motion.div>
-
-            {/* Headline */}
-            <h1 
-              className="font-sans font-bold tracking-[-0.035em] text-4xl sm:text-5xl md:text-6xl lg:text-[4.15rem] xl:text-[4.65rem] leading-[0.98] select-none text-stone-900"
-            >
-              <span className="block">
+            {/* Headline Responsif */}
+            <h1 className="font-sans font-extrabold tracking-tight text-[2.5rem] leading-[1.05] sm:text-5xl md:text-6xl lg:text-[4rem] xl:text-[4.65rem] select-none text-[#0A192F]">
+              <span className="block tracking-tight">
                 <WordsPullUp text={content.headline[currentLang]} />
               </span>
-              <span className="block text-stone-800 mt-1 sm:mt-1.5">
+              <span className="block bg-gradient-to-r from-[#16425B] via-[#1F4E79] to-[#2B608A] bg-clip-text text-transparent mt-1 pb-1">
                 <WordsPullUp text={content.headlineSecondary[currentLang]} />
               </span>
             </h1>
 
             {/* Tagline */}
-            <p className="mt-4 sm:mt-5 text-base sm:text-lg md:text-xl text-stone-700 font-medium tracking-tight max-w-2xl">
+            <p className="mt-3.5 sm:mt-5 text-base sm:text-lg lg:text-xl text-[#2B3B4E] font-medium tracking-tight max-w-xl lg:max-w-2xl leading-snug">
               {content.tagline[currentLang]}
             </p>
 
@@ -160,51 +143,52 @@ export const HeroPrismaVPT: React.FC<HeroPrismaVPTProps> = ({
             <motion.p
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.7, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="mt-3.5 text-xs sm:text-sm md:text-[15px] text-stone-600 leading-relaxed font-normal max-w-xl"
-              style={{ lineHeight: 1.65 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="mt-3 text-xs sm:text-sm md:text-[15px] text-[#4A5D73] leading-relaxed max-w-lg lg:max-w-xl font-normal"
             >
               {content.description[currentLang]}
             </motion.p>
 
             {/* CTA Buttons */}
-            <div className="mt-6 sm:mt-7 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
+            <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-3 w-full sm:w-auto">
+              {/* Primary CTA */}
               <motion.button
-                initial={{ y: 16, opacity: 0 }}
+                initial={{ y: 15, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
+                transition={{ duration: 0.5, delay: 0.35 }}
                 onClick={() => onOpenConsultation('Comprehensive Legal & Immigration')}
-                className="group inline-flex items-center justify-between gap-3 rounded-full bg-[#1A1E24] hover:bg-black text-white py-2 pl-6 pr-2 text-sm sm:text-base font-semibold transition-all hover:gap-4 shadow-md active:scale-98 cursor-pointer"
+                className="group relative inline-flex items-center justify-between sm:justify-center gap-3 sm:gap-4 rounded-full bg-[#112F45] hover:bg-[#0C2436] text-white py-2.5 sm:py-2 pl-6 pr-2.5 text-sm sm:text-base font-medium transition-all shadow-[0_8px_20px_-4px_rgba(17,47,69,0.3)] hover:shadow-[0_12px_25px_-4px_rgba(17,47,69,0.4)] active:scale-[0.98] cursor-pointer"
               >
-                <span>{content.primaryCta[currentLang]}</span>
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#303642] text-white transition-transform group-hover:scale-105">
+                <span className="font-semibold tracking-wide">{content.primaryCta[currentLang]}</span>
+                <span className="flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-full bg-[#1F4E79] text-white transition-all duration-300 group-hover:scale-105 group-hover:bg-[#256196]">
                   <ArrowRight className="h-4 w-4" />
                 </span>
               </motion.button>
 
+              {/* Secondary CTA */}
               <motion.button
-                initial={{ y: 16, opacity: 0 }}
+                initial={{ y: 15, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.5 }}
+                transition={{ duration: 0.5, delay: 0.45 }}
                 onClick={onExploreServices}
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-white hover:bg-stone-50 px-5 py-3 text-xs sm:text-sm font-semibold text-stone-800 border border-stone-200/90 shadow-xs hover:border-stone-300 transition-all cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-white/90 hover:bg-[#F3F7FA] px-5 py-3 text-xs sm:text-sm font-semibold text-[#16425B] border border-[#CBDCE9] shadow-xs hover:border-[#1F4E79]/50 transition-all cursor-pointer"
               >
-                <Building2 className="w-4 h-4 text-[#C59B27]" />
+                <Building2 className="w-4 h-4 text-[#1F4E79]" />
                 <span>{content.secondaryCta[currentLang]}</span>
               </motion.button>
             </div>
 
           </div>
 
-          {/* Right Column: Rotating 3D Globe with Clickable Dynamic Micro-Badges & Controls */}
-          <div className="col-span-12 lg:col-span-5 flex flex-col items-center justify-center relative">
-            <div className="relative w-full max-w-[460px] aspect-square flex items-center justify-center">
+          {/* Right Column: Globe Container Responsif */}
+          <div className="lg:col-span-5 flex flex-col items-center justify-center relative w-full mt-2 lg:mt-0">
+            <div className="relative w-full max-w-[340px] sm:max-w-[420px] lg:max-w-[480px] aspect-square flex items-center justify-center">
               
-              {/* Soft Ambient Radial Halo */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-sky-100/50 via-amber-100/30 to-transparent blur-3xl pointer-events-none -z-10" />
+              {/* Radial Glow di Belakang Globe */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-[#16425B]/25 via-[#1F4E79]/15 to-transparent blur-2xl sm:blur-3xl pointer-events-none -z-10" />
 
-              {/* Cobe Globe */}
-              <div className="w-full h-full relative p-2">
+              {/* Interactive Globe Container */}
+              <div className="w-full h-full relative flex items-center justify-center">
                 <GlobeFlights
                   speed={0.0022}
                   onSelectCategory={handleSelectGlobeCategory}
@@ -219,25 +203,26 @@ export const HeroPrismaVPT: React.FC<HeroPrismaVPTProps> = ({
       </div>
 
       {/* 3. Bottom Credential Ribbon */}
-      <div className="relative z-10 w-full border-t border-stone-200/80 bg-white/70 backdrop-blur-md py-4 sm:py-5">
+      <div className="relative z-10 w-full border-t border-[#E2EAF1] bg-white/80 backdrop-blur-md py-4 sm:py-5 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 items-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 items-center">
+            
             {content.stats.map((stat, idx) => (
-              <div key={idx} className="border-l border-stone-200 pl-4">
-                <div 
-                  className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-stone-900"
-                >
+              <div key={idx} className="border-l border-[#D4E2ED] pl-3.5 sm:pl-4">
+                <div className="text-lg sm:text-2xl lg:text-3xl font-bold tracking-tight text-[#0A192F]">
                   {stat.val}
                 </div>
-                <div className="text-[10px] sm:text-xs text-stone-500 font-medium uppercase tracking-wider mt-0.5">
+                <div className="text-[9px] sm:text-xs text-[#5E7287] font-medium uppercase tracking-wider mt-0.5 leading-tight">
                   {stat.label[currentLang]}
                 </div>
               </div>
             ))}
-            <div className="col-span-2 md:col-span-1 flex items-center gap-2.5 text-xs text-stone-600 font-medium">
-              <ShieldCheck className="w-4 h-4 text-[#C59B27] shrink-0" />
-              <span>Licensed Legal & Immigration Practice in Indonesia</span>
+
+            <div className="col-span-2 md:col-span-1 flex items-center gap-2.5 text-xs text-[#2B3B4E] font-medium pt-2 sm:pt-0 border-t md:border-t-0 border-[#E2EAF1]/60">
+              <ShieldCheck className="w-4 h-4 text-[#16425B] shrink-0" />
+              <span className="leading-snug">Licensed Legal & Immigration Practice in Indonesia</span>
             </div>
+
           </div>
         </div>
       </div>

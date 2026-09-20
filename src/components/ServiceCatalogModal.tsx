@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { Language, ServiceItem } from '../types';
-import { allServicesList, serviceCategories } from '../data/servicesData';
-import { Search, X, ArrowRight, Clock, Tag, Filter } from 'lucide-react';
+import { allServicesList } from '../data/servicesData';
+import { Search, X, ArrowRight, Clock, Filter, ChevronLeft, ChevronRight, ArrowLeft } from 'lucide-react';
 
 interface ServiceCatalogModalProps {
   isOpen: boolean;
@@ -22,6 +22,8 @@ export const ServiceCatalogModal: React.FC<ServiceCatalogModalProps> = ({
   const [selectedCategoryTab, setSelectedCategoryTab] = useState('all');
   const [selectedSubCategory, setSelectedSubCategory] = useState('all');
 
+  const tabsContainerRef = useRef<HTMLDivElement>(null);
+
   React.useEffect(() => {
     if (isOpen) {
       setSelectedCategoryTab(initialCategory || 'all');
@@ -40,7 +42,13 @@ export const ServiceCatalogModal: React.FC<ServiceCatalogModalProps> = ({
     { id: 'additional-services', label: { EN: "7. Support Add-ons", ID: "7. Layanan Tambahan", JP: "7. 付帯サポート" } },
   ];
 
-  // Derive available subcategories for the selected category
+  // Mendapatkan label kategori saat ini untuk breadcrumb
+  const currentCategoryLabel = useMemo(() => {
+    const active = categoriesTabs.find((c) => c.id === selectedCategoryTab);
+    return active ? active.label[currentLang] : '';
+  }, [selectedCategoryTab, currentLang]);
+
+  // Ambil daftar subkategori untuk tab yang sedang aktif
   const availableSubCategories = useMemo(() => {
     if (selectedCategoryTab === 'all') return [];
     const categoryServices = allServicesList.filter(s => s.categoryId === selectedCategoryTab);
@@ -56,6 +64,15 @@ export const ServiceCatalogModal: React.FC<ServiceCatalogModalProps> = ({
   const handleCategoryChange = (catId: string) => {
     setSelectedCategoryTab(catId);
     setSelectedSubCategory('all');
+  };
+
+
+
+  const handleScrollTabs = (direction: 'left' | 'right') => {
+    if (tabsContainerRef.current) {
+      const scrollAmount = direction === 'left' ? -220 : 220;
+      tabsContainerRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
   };
 
   const filteredServices = useMemo(() => {
@@ -83,105 +100,175 @@ export const ServiceCatalogModal: React.FC<ServiceCatalogModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 lg:p-8 bg-[#173A5E]/40 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-5xl max-h-[92vh] rounded-2xl shadow-2xl border border-[#E8EDF1] flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 lg:p-8 bg-[#0A192F]/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-[#FAFCFF] w-full max-w-5xl max-h-[92vh] rounded-3xl shadow-2xl border border-[#CBDCE9] flex flex-col overflow-hidden">
         
-        {/* Modal Top Bar */}
-        <div className="px-6 py-4 sm:py-5 border-b border-[#E8EDF1] flex items-center justify-between bg-[#FAF9F6]">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#2D6A9F]" />
-              <h2 className="text-lg sm:text-2xl font-extrabold text-[#173A5E] font-sans-corporate">
-                {currentLang === 'ID' ? 'Katalog Layanan Legalitas & Keimigrasian' : currentLang === 'JP' ? '法務・入国管理総合サービスカタログ' : 'Corporate Legal & Immigration Catalog'}
-              </h2>
+        {/* Modal Top Navigation Bar (Kembali ke Halaman Sebelumnya & Breadcrumbs) */}
+        <div className="px-5 py-3 border-b border-[#E2EAF1] bg-[#FAFCFF] flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-2 overflow-hidden text-xs text-[#4A5D73]">
+         
+
+            {/* Breadcrumb Links */}
+            <div className="flex items-center gap-1.5 truncate pl-1 font-medium">
+          
+              <ChevronRight className="w-3 h-3 text-[#CBDCE9] shrink-0" />
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedCategoryTab('all');
+                  setSelectedSubCategory('all');
+                }}
+                className={`cursor-pointer hover:underline ${selectedCategoryTab === 'all' ? 'font-bold text-[#0A192F]' : 'hover:text-[#1F4E79]'}`}
+              >
+                {currentLang === 'ID' ? 'Semua Katalog' : currentLang === 'JP' ? 'カタログ全般' : 'All Catalog'}
+              </button>
+              {selectedCategoryTab !== 'all' && (
+                <>
+                  <ChevronRight className="w-3 h-3 text-[#CBDCE9] shrink-0" />
+                  <span className="font-bold text-[#1F4E79] truncate">
+                    {currentCategoryLabel}
+                  </span>
+                </>
+              )}
             </div>
-            <p className="text-xs text-[#5B6B7C] mt-1">
-              {currentLang === 'ID'
-                ? 'Katalog lengkap 7 kategori spesialisasi: TKA & ITAS, Visa Indonesia (C/D/Golden), Visa Luar Negeri & Paspor, Legalitas PT, Dokumen Sipil, Layanan Eksekutif & Tambahan.'
-                : 'Complete directory across 7 core legal practice areas: Expatriate ITAS, Indonesia Visas (C/D/Golden), Overseas & Passports, Corporate Legal, Civil Docs, Executive VIP & Add-ons.'}
-            </p>
           </div>
+
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white border border-[#E8EDF1] hover:bg-[#EAF3FA] text-[#173A5E] flex items-center justify-center transition-colors shrink-0"
+            className="w-8 h-8 rounded-full bg-white border border-[#CBDCE9] hover:bg-[#112F45]/10 text-[#0A192F] flex items-center justify-center transition-colors shrink-0 cursor-pointer ml-2"
             aria-label="Close"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Search & Filters */}
-        <div className="p-4 sm:p-6 border-b border-[#E8EDF1] bg-white space-y-3">
+        {/* Modal Header Title */}
+        <div className="px-6 py-4 border-b border-[#E2EAF1] bg-white shrink-0">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#1F4E79]" />
+            <h2 className="text-lg sm:text-2xl font-extrabold text-[#0A192F] font-sans-corporate tracking-tight">
+              {currentLang === 'ID'
+                ? 'Katalog Layanan Legalitas & Keimigrasian'
+                : currentLang === 'JP'
+                ? '法務・入国管理総合サービスカタログ'
+                : 'Corporate Legal & Immigration Catalog'}
+            </h2>
+          </div>
+          <p className="text-xs text-[#4A5D73] mt-1">
+            {currentLang === 'ID'
+              ? 'Pilih kategori atau gunakan pencarian untuk melihat rincian persyaratan dan alur proses resmi.'
+              : currentLang === 'JP'
+              ? '分野ごとのタブまたは検索バーより要件・手続きフローをご確認いただけます。'
+              : 'Select practice area or use search to review requirements and official processing workflows.'}
+          </p>
+        </div>
+
+        {/* Search & Category Filter Controls */}
+        <div className="p-4 sm:p-6 border-b border-[#E2EAF1] bg-white space-y-3.5 shrink-0">
           
           {/* Search Bar */}
           <div className="relative">
-            <Search className="w-4 h-4 text-[#5B6B7C] absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[#4A5D73] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={currentLang === 'ID' 
-                ? "Cari layanan berdasarkan nama, indeks kode (C1, C2, E23, D1, PMA, Paspor), atau kata kunci..." 
-                : "Search service by name, visa index (C1, C2, E23, D1, PMA, Passport), or keywords..."}
-              className="w-full bg-[#FAF9F6] pl-10 pr-16 py-2.5 text-xs sm:text-sm text-[#1F2933] border border-[#E8EDF1] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#2D6A9F] focus:border-[#2D6A9F]"
+              placeholder={
+                currentLang === 'ID' 
+                  ? 'Cari layanan berdasarkan nama, kode indeks (C1, C2, E23, D1, PMA, Paspor), atau kata kunci...' 
+                  : currentLang === 'JP'
+                  ? 'サービス名、ビザ記号（C1, C2, E23, D1, PMA, 旅券）、キーワードで検索...'
+                  : 'Search service by name, visa index (C1, C2, E23, D1, PMA, Passport), or keywords...'
+              }
+              className="w-full bg-[#FAFCFF] pl-10 pr-20 py-2.5 text-xs sm:text-sm text-[#0A192F] border border-[#CBDCE9] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#1F4E79] focus:border-[#1F4E79] placeholder:text-[#5E7287] transition-all"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-[#5B6B7C] hover:text-[#173A5E]"
+                className="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-0.5 text-xs font-semibold text-[#4A5D73] hover:text-[#0A192F] bg-[#112F45]/5 rounded-md transition-colors cursor-pointer"
               >
-                Clear
+                {currentLang === 'ID' ? 'Hapus' : currentLang === 'JP' ? '消去' : 'Clear'}
               </button>
             )}
           </div>
 
-          {/* Category Tabs */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-            {categoriesTabs.map((tab) => (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => handleCategoryChange(tab.id)}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-lg whitespace-nowrap transition-colors ${
-                  selectedCategoryTab === tab.id
-                    ? 'bg-[#173A5E] text-white shadow-xs'
-                    : 'bg-[#FAF9F6] border border-[#E8EDF1] text-[#5B6B7C] hover:text-[#173A5E] hover:bg-[#EAF3FA]'
-                }`}
-              >
-                {tab.label[currentLang]}
-              </button>
-            ))}
+          {/* Practice Area Tabs dengan Tombol Scroll Kiri & Kanan yang Berfungsi */}
+          <div className="relative flex items-center">
+            {/* Scroll Left Button */}
+            <button
+              type="button"
+              onClick={() => handleScrollTabs('left')}
+              className="absolute -left-2 z-10 w-7 h-7 rounded-full bg-white border border-[#CBDCE9] shadow-sm flex items-center justify-center text-[#0A192F] hover:bg-[#112F45]/5 hover:text-[#1F4E79] transition-all cursor-pointer"
+              aria-label="Scroll left"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+
+            {/* Scrollable Tabs */}
+            <div
+              ref={tabsContainerRef}
+              className="flex items-center gap-2 overflow-x-auto px-6 py-1 scroll-smooth touch-pan-x w-full"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              {categoriesTabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => handleCategoryChange(tab.id)}
+                  className={`px-3.5 py-1.5 text-xs font-bold rounded-xl whitespace-nowrap transition-all cursor-pointer shrink-0 ${
+                    selectedCategoryTab === tab.id
+                      ? 'bg-[#112F45] text-white shadow-xs'
+                      : 'bg-[#FAFCFF] border border-[#CBDCE9] text-[#4A5D73] hover:text-[#0A192F] hover:bg-[#112F45]/5'
+                  }`}
+                >
+                  {tab.label[currentLang]}
+                </button>
+              ))}
+            </div>
+
+            {/* Scroll Right Button */}
+            <button
+              type="button"
+              onClick={() => handleScrollTabs('right')}
+              className="absolute -right-2 z-10 w-7 h-7 rounded-full bg-white border border-[#CBDCE9] shadow-sm flex items-center justify-center text-[#0A192F] hover:bg-[#112F45]/5 hover:text-[#1F4E79] transition-all cursor-pointer"
+              aria-label="Scroll right"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
           </div>
 
-          {/* Subcategory Filter Pills (if category has subcategories) */}
+          {/* Subcategory Filter Chips */}
           {availableSubCategories.length > 0 && (
-            <div className="flex items-center gap-2 pt-1 overflow-x-auto scrollbar-none text-xs">
-              <span className="text-[11px] font-bold text-[#5B6B7C] uppercase tracking-wider shrink-0 flex items-center gap-1">
-                <Filter className="w-3 h-3 text-[#2D6A9F]" />
-                Filter:
+            <div
+              className="flex items-center gap-2 pt-0.5 overflow-x-auto text-xs touch-pan-x"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              <span className="text-[11px] font-bold text-[#4A5D73] uppercase tracking-wider shrink-0 flex items-center gap-1">
+                <Filter className="w-3 h-3 text-[#1F4E79]" />
+                {currentLang === 'ID' ? 'Filter Sub-seksi:' : currentLang === 'JP' ? '詳細区分:' : 'Filter:'}
               </span>
               <button
                 type="button"
                 onClick={() => setSelectedSubCategory('all')}
-                className={`px-2.5 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap transition-colors ${
+                className={`px-3 py-1 rounded-full text-[11px] font-bold whitespace-nowrap transition-all cursor-pointer shrink-0 ${
                   selectedSubCategory === 'all'
-                    ? 'bg-[#2D6A9F] text-white'
-                    : 'bg-[#EAF3FA] text-[#2D6A9F] hover:bg-[#DCECF7]'
+                    ? 'bg-[#1F4E79] text-white shadow-2xs'
+                    : 'bg-[#112F45]/5 text-[#1F4E79] hover:bg-[#112F45]/10 border border-[#CBDCE9]'
                 }`}
               >
-                All Sub-sections
+                {currentLang === 'ID' ? 'Semua Sub-kategori' : currentLang === 'JP' ? 'すべて' : 'All Sub-sections'}
               </button>
               {availableSubCategories.map((sub) => (
                 <button
                   key={sub}
                   type="button"
                   onClick={() => setSelectedSubCategory(sub)}
-                  className={`px-2.5 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap transition-colors ${
+                  className={`px-3 py-1 rounded-full text-[11px] font-bold whitespace-nowrap transition-all cursor-pointer shrink-0 ${
                     selectedSubCategory === sub
-                      ? 'bg-[#2D6A9F] text-white'
-                      : 'bg-[#EAF3FA] text-[#5B6B7C] hover:text-[#173A5E] hover:bg-[#DCECF7]'
+                      ? 'bg-[#1F4E79] text-white shadow-2xs'
+                      : 'bg-white text-[#4A5D73] hover:text-[#0A192F] hover:bg-[#112F45]/5 border border-[#CBDCE9]'
                   }`}
                 >
                   {sub}
@@ -190,9 +277,12 @@ export const ServiceCatalogModal: React.FC<ServiceCatalogModalProps> = ({
             </div>
           )}
 
-          <div className="flex items-center justify-between text-xs text-[#5B6B7C] pt-1">
+          {/* Counter Status */}
+          <div className="flex items-center justify-between text-xs text-[#4A5D73] pt-0.5">
             <span>
-              Showing <strong className="text-[#173A5E]">{filteredServices.length}</strong> services
+              {currentLang === 'ID' ? 'Menampilkan' : currentLang === 'JP' ? '表示中:' : 'Showing'}{' '}
+              <strong className="text-[#0A192F] font-bold">{filteredServices.length}</strong>{' '}
+              {currentLang === 'ID' ? 'layanan terverifikasi' : currentLang === 'JP' ? '件のサービス' : 'services'}
             </span>
             {(searchQuery || selectedCategoryTab !== 'all' || selectedSubCategory !== 'all') && (
               <button
@@ -202,21 +292,29 @@ export const ServiceCatalogModal: React.FC<ServiceCatalogModalProps> = ({
                   setSelectedCategoryTab('all');
                   setSelectedSubCategory('all');
                 }}
-                className="text-[#2D6A9F] font-semibold hover:underline"
+                className="text-[#1F4E79] font-bold hover:underline cursor-pointer"
               >
-                Reset all filters
+                {currentLang === 'ID' ? 'Atur ulang filter' : currentLang === 'JP' ? '条件をリセット' : 'Reset all filters'}
               </button>
             )}
           </div>
 
         </div>
 
-        {/* Compact Service Rows List */}
-        <div className="overflow-y-auto p-4 sm:p-6 flex-1 divide-y divide-[#E8EDF1]">
+        {/* Scrollable Service Rows */}
+        <div className="overflow-y-auto p-4 sm:p-6 flex-1 divide-y divide-[#E2EAF1]">
           {filteredServices.length === 0 ? (
-            <div className="py-16 text-center text-[#5B6B7C]">
-              <p className="text-sm font-semibold text-[#173A5E]">No services match your search or filter.</p>
-              <p className="text-xs mt-1">Try searching for generic terms like &apos;visa&apos;, &apos;pma&apos;, &apos;paspor&apos;, or &apos;itas&apos;.</p>
+            <div className="py-16 text-center text-[#4A5D73] space-y-3">
+              <div className="w-12 h-12 rounded-full bg-[#112F45]/5 text-[#1F4E79] flex items-center justify-center mx-auto border border-[#CBDCE9]">
+                <Search className="w-5 h-5" />
+              </div>
+              <p className="text-sm font-bold text-[#0A192F]">
+                {currentLang === 'ID'
+                  ? 'Tidak ada layanan yang cocok dengan pencarian Anda.'
+                  : currentLang === 'JP'
+                  ? '条件に一致するサービスが見つかりませんでした。'
+                  : 'No services match your search or filter.'}
+              </p>
               <button
                 type="button"
                 onClick={() => {
@@ -224,52 +322,50 @@ export const ServiceCatalogModal: React.FC<ServiceCatalogModalProps> = ({
                   setSelectedCategoryTab('all');
                   setSelectedSubCategory('all');
                 }}
-                className="mt-4 px-4 py-2 bg-[#EAF3FA] text-[#2D6A9F] rounded-lg text-xs font-bold hover:bg-[#DCECF7]"
+                className="mt-2 px-4 py-2 bg-[#112F45] text-white rounded-xl text-xs font-bold hover:bg-[#1F4E79] transition-colors cursor-pointer"
               >
-                Reset filters
+                {currentLang === 'ID' ? 'Hapus Semua Filter' : currentLang === 'JP' ? '検索条件をクリア' : 'Reset filters'}
               </button>
             </div>
           ) : (
             filteredServices.map((service) => (
               <div
                 key={service.id}
-                onClick={() => {
-                  onSelectService(service);
-                }}
-                className="py-4 px-3 rounded-xl hover:bg-[#EAF3FA]/60 transition-all duration-200 cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 group"
+                onClick={() => onSelectService(service)}
+                className="py-4 px-3.5 rounded-2xl hover:bg-white hover:border-[#CBDCE9] border border-transparent hover:shadow-2xs transition-all duration-200 cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 group my-1"
               >
-                <div className="space-y-1 flex-1">
+                <div className="space-y-1.5 flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
                     {service.code && (
-                      <span className="text-[11px] font-mono font-bold px-2 py-0.5 rounded bg-[#173A5E] text-white shadow-2xs">
+                      <span className="text-[11px] font-mono font-extrabold px-2 py-0.5 rounded-md bg-[#112F45] text-white shadow-2xs">
                         {service.code}
                       </span>
                     )}
-                    <span className="text-[10px] uppercase font-bold tracking-wider text-[#2D6A9F] bg-white border border-[#DCECF7] px-2 py-0.5 rounded">
+                    <span className="text-[10px] uppercase font-bold tracking-wider text-[#1F4E79] bg-[#112F45]/5 border border-[#CBDCE9] px-2 py-0.5 rounded-md">
                       {service.categoryName[currentLang]}
                     </span>
                     {service.subCategory && (
-                      <span className="text-[10px] font-medium text-[#5B6B7C] bg-[#FAF9F6] border border-[#E8EDF1] px-2 py-0.5 rounded">
+                      <span className="text-[10px] font-medium text-[#4A5D73] bg-white border border-[#CBDCE9] px-2 py-0.5 rounded-md">
                         {service.subCategory[currentLang] || service.subCategory.ID}
                       </span>
                     )}
-                    <h3 className="text-sm sm:text-base font-bold text-[#173A5E] group-hover:text-[#2D6A9F] transition-colors">
+                    <h3 className="text-sm sm:text-base font-bold text-[#0A192F] group-hover:text-[#1F4E79] transition-colors">
                       {service.name[currentLang]}
                     </h3>
                   </div>
 
-                  <p className="text-xs text-[#5B6B7C] line-clamp-2 max-w-3xl">
+                  <p className="text-xs text-[#4A5D73] line-clamp-2 max-w-3xl leading-relaxed">
                     {service.shortDescription[currentLang]}
                   </p>
                 </div>
 
                 <div className="flex items-center gap-3 sm:gap-4 shrink-0 self-end sm:self-center">
-                  <div className="flex items-center gap-1 text-[11px] text-[#5B6B7C] font-medium bg-white px-2.5 py-1 rounded-full border border-[#E8EDF1]">
-                    <Clock className="w-3.5 h-3.5 text-[#2D6A9F]" />
+                  <div className="flex items-center gap-1 text-[11px] text-[#4A5D73] font-medium bg-[#FAFCFF] px-2.5 py-1 rounded-full border border-[#CBDCE9]">
+                    <Clock className="w-3.5 h-3.5 text-[#1F4E79]" />
                     <span>{service.duration[currentLang]}</span>
                   </div>
 
-                  <div className="w-7 h-7 rounded-full bg-white border border-[#E8EDF1] flex items-center justify-center text-[#173A5E] group-hover:bg-[#173A5E] group-hover:text-white transition-all duration-200 group-hover:translate-x-1 shadow-2xs">
+                  <div className="w-8 h-8 rounded-full bg-white border border-[#CBDCE9] flex items-center justify-center text-[#112F45] group-hover:bg-[#112F45] group-hover:text-white group-hover:border-[#112F45] transition-all duration-200 group-hover:translate-x-1 shadow-2xs">
                     <ArrowRight className="w-3.5 h-3.5" />
                   </div>
                 </div>

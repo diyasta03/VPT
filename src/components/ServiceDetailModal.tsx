@@ -1,12 +1,13 @@
 import React from 'react';
 import { Language, ServiceItem } from '../types';
-import { X, Clock, CheckCircle, AlertCircle, ArrowRight, ShieldCheck, ChevronRight } from 'lucide-react';
+import { X, Clock, CheckCircle, AlertCircle, ArrowRight, ShieldCheck, ChevronRight, MessageSquare } from 'lucide-react';
 
 interface ServiceDetailModalProps {
   service: ServiceItem | null;
   currentLang: Language;
   onClose: () => void;
   onRequestConsultation: (service: ServiceItem) => void;
+  onBackToCategory?: (categoryId: string) => void;
 }
 
 export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
@@ -14,28 +15,63 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
   currentLang,
   onClose,
   onRequestConsultation,
+  onBackToCategory,
 }) => {
   if (!service) return null;
 
+  const WHATSAPP_NUMBER = '6287887484517';
+
+  const handleBreadcrumbClick = (catId?: string) => {
+    if (onBackToCategory) {
+      onBackToCategory(catId || 'all');
+    } else {
+      onClose();
+    }
+  };
+
+  const handleWhatsAppDirect = () => {
+    const message = currentLang === 'JP'
+      ? `Visa Pro Teknologi 様、【${service.name.JP || service.name.EN}】について直接ご相談させていただきたく存じます。`
+      : currentLang === 'EN'
+      ? `Hello Visa Pro Teknologi, I would like to inquire about ${service.name.EN}.`
+      : `Halo Visa Pro Teknologi, saya ingin berkonsultasi mengenai layanan ${service.name.ID}.`;
+
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-10 bg-[#173A5E]/40 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-5xl max-h-[92vh] rounded-2xl shadow-2xl border border-[#E8EDF1] overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-10 bg-[#0A192F]/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-[#FAFCFF] w-full max-w-5xl max-h-[92vh] rounded-3xl shadow-2xl border border-[#CBDCE9] overflow-hidden flex flex-col">
         
-        {/* Top Header Bar */}
-        <div className="px-6 py-4 border-b border-[#E8EDF1] flex items-center justify-between bg-[#FAF9F6]">
-          {/* Breadcrumbs */}
-          <div className="flex items-center text-xs font-medium text-[#5B6B7C] overflow-hidden whitespace-nowrap">
-            <span>Services</span>
-            <ChevronRight className="w-3.5 h-3.5 mx-1.5 shrink-0 text-[#2D6A9F]" />
-            <span className="text-[#2D6A9F] font-semibold">{service.categoryName[currentLang]}</span>
-            <ChevronRight className="w-3.5 h-3.5 mx-1.5 shrink-0 text-[#2D6A9F]" />
-            <span className="truncate text-[#173A5E] font-bold">{service.name[currentLang]}</span>
-          </div>
+        {/* Top Header Bar dengan Breadcrumbs Interaktif */}
+        <div className="px-6 py-4 border-b border-[#E2EAF1] flex items-center justify-between bg-white shrink-0">
+          {/* Interactive Breadcrumbs */}
+          <nav aria-label="Breadcrumb" className="flex items-center text-xs font-medium text-[#4A5D73] overflow-hidden whitespace-nowrap">
+            <button
+              type="button"
+              onClick={() => handleBreadcrumbClick('all')}
+              className="hover:text-[#1F4E79] hover:underline transition-colors cursor-pointer"
+            >
+              {currentLang === 'ID' ? 'Semua Katalog' : currentLang === 'JP' ? 'サービス一覧' : 'Services'}
+            </button>
+            <ChevronRight className="w-3.5 h-3.5 mx-1.5 shrink-0 text-[#CBDCE9]" />
+            <button
+              type="button"
+              onClick={() => handleBreadcrumbClick(service.categoryId)}
+              className="text-[#1F4E79] font-bold hover:underline transition-colors cursor-pointer"
+            >
+              {service.categoryName[currentLang]}
+            </button>
+            <ChevronRight className="w-3.5 h-3.5 mx-1.5 shrink-0 text-[#CBDCE9]" />
+            <span className="truncate text-[#0A192F] font-bold">
+              {service.name[currentLang]}
+            </span>
+          </nav>
 
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white border border-[#E8EDF1] hover:bg-[#EAF3FA] text-[#173A5E] flex items-center justify-center transition-colors"
+            className="w-8 h-8 rounded-full bg-[#FAFCFF] border border-[#CBDCE9] hover:bg-[#112F45]/10 text-[#0A192F] flex items-center justify-center transition-colors shrink-0 cursor-pointer"
             aria-label="Close Modal"
           >
             <X className="w-4 h-4" />
@@ -51,51 +87,62 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
               
               {/* Title & Duration */}
               <div>
-                <div className="flex items-center gap-2 flex-wrap mb-2">
+                <div className="flex items-center gap-2 flex-wrap mb-2.5">
                   {service.code && (
-                    <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded bg-[#173A5E] text-white shadow-2xs">
+                    <span className="text-xs font-mono font-extrabold px-2.5 py-0.5 rounded-md bg-[#112F45] text-white shadow-2xs">
                       {service.code}
                     </span>
                   )}
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#2D6A9F] bg-[#EAF3FA] px-2.5 py-0.5 rounded">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#1F4E79] bg-[#112F45]/5 border border-[#CBDCE9] px-2.5 py-0.5 rounded-md">
                     {service.categoryName[currentLang]}
                   </span>
                   {service.subCategory && (
-                    <span className="text-[11px] font-medium text-[#5B6B7C] bg-[#FAF9F6] border border-[#E8EDF1] px-2 py-0.5 rounded">
+                    <span className="text-[11px] font-medium text-[#4A5D73] bg-white border border-[#CBDCE9] px-2.5 py-0.5 rounded-md">
                       {service.subCategory[currentLang] || service.subCategory.ID}
                     </span>
                   )}
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-[#173A5E] font-sans-corporate">
+
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0A192F] font-sans-corporate tracking-tight">
                   {service.name[currentLang]}
                 </h2>
-                <div className="mt-3 flex items-center gap-2 text-xs font-medium text-[#5B6B7C]">
-                  <Clock className="w-4 h-4 text-[#2D6A9F]" />
-                  <span>Standard Processing SLA: <strong className="text-[#173A5E]">{service.duration[currentLang]}</strong></span>
+
+                <div className="mt-3.5 flex items-center gap-2 text-xs font-medium text-[#4A5D73]">
+                  <Clock className="w-4 h-4 text-[#1F4E79]" />
+                  <span>
+                    {currentLang === 'ID' ? 'Standar Estimasi SLA:' : currentLang === 'JP' ? '標準所要日数:' : 'Standard Processing SLA:'}{' '}
+                    <strong className="text-[#0A192F]">{service.duration[currentLang]}</strong>
+                  </span>
                 </div>
               </div>
 
               {/* Overview */}
-              <div className="border-t border-[#E8EDF1] pt-6">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-[#173A5E] mb-2">
-                  Service Overview
+              <div className="border-t border-[#E2EAF1] pt-6">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[#1F4E79] mb-2">
+                  {currentLang === 'ID' ? 'Ringkasan Layanan' : currentLang === 'JP' ? '業務概要' : 'Service Overview'}
                 </h3>
-                <p className="text-sm sm:text-base text-[#5B6B7C] leading-relaxed">
+                <p className="text-sm sm:text-base text-[#4A5D73] leading-relaxed">
                   {service.overview[currentLang]}
                 </p>
               </div>
 
               {/* Who This Service Is For */}
-              {service.whoFor[currentLang].length > 0 && (
-                <div className="bg-[#FAF9F6] p-5 rounded-xl border border-[#E8EDF1]">
-                  <h3 className="text-sm font-bold text-[#173A5E] mb-3 flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-[#2D6A9F]" />
-                    <span>Who This Service Is For</span>
+              {service.whoFor[currentLang] && service.whoFor[currentLang].length > 0 && (
+                <div className="bg-white p-6 rounded-2xl border border-[#CBDCE9] shadow-2xs">
+                  <h3 className="text-sm font-bold text-[#0A192F] mb-4 flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-[#1F4E79]" />
+                    <span>
+                      {currentLang === 'ID'
+                        ? 'Target & Subjek Layanan'
+                        : currentLang === 'JP'
+                        ? '対象となるお客様'
+                        : 'Who This Service Is For'}
+                    </span>
                   </h3>
-                  <ul className="space-y-2">
+                  <ul className="space-y-2.5">
                     {service.whoFor[currentLang].map((item, i) => (
-                      <li key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-[#1F2933]">
-                        <CheckCircle className="w-4 h-4 text-[#2D6A9F] shrink-0 mt-0.5" />
+                      <li key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-[#0A192F]">
+                        <CheckCircle className="w-4 h-4 text-[#1F4E79] shrink-0 mt-0.5" />
                         <span>{item}</span>
                       </li>
                     ))}
@@ -104,14 +151,14 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
               )}
 
               {/* Requirements */}
-              {service.requirements[currentLang].length > 0 && (
+              {service.requirements[currentLang] && service.requirements[currentLang].length > 0 && (
                 <div>
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-[#173A5E] mb-3">
-                    Key Mandatory Requirements
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-[#1F4E79] mb-3">
+                    {currentLang === 'ID' ? 'Persyaratan Dokumen Utama' : currentLang === 'JP' ? '主要提出要件・書類' : 'Key Mandatory Requirements'}
                   </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {service.requirements[currentLang].map((req, idx) => (
-                      <div key={idx} className="p-3 bg-white border border-[#E8EDF1] rounded-lg text-xs text-[#1F2933]">
+                      <div key={idx} className="p-3.5 bg-white border border-[#CBDCE9] rounded-xl text-xs text-[#0A192F] shadow-2xs">
                         {req}
                       </div>
                     ))}
@@ -120,22 +167,22 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
               )}
 
               {/* Process Steps */}
-              {service.processSteps.length > 0 && (
+              {service.processSteps && service.processSteps.length > 0 && (
                 <div>
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-[#173A5E] mb-4">
-                    Step-by-Step Execution Workflow
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-[#1F4E79] mb-4">
+                    {currentLang === 'ID' ? 'Tahapan & Alur Pengerjaan' : currentLang === 'JP' ? '申請・手続きフロー' : 'Step-by-Step Execution Workflow'}
                   </h3>
                   <div className="space-y-3">
                     {service.processSteps.map((step) => (
-                      <div key={step.step} className="p-4 bg-[#FAF9F6] border border-[#E8EDF1] rounded-xl flex items-start gap-4">
-                        <span className="w-7 h-7 rounded-full bg-[#173A5E] text-white flex items-center justify-center font-bold text-xs shrink-0">
+                      <div key={step.step} className="p-4 bg-white border border-[#CBDCE9] rounded-2xl flex items-start gap-4 shadow-2xs">
+                        <span className="w-7 h-7 rounded-xl bg-[#112F45] text-white flex items-center justify-center font-bold text-xs shrink-0">
                           {step.step}
                         </span>
                         <div>
-                          <h4 className="text-sm font-bold text-[#173A5E]">
+                          <h4 className="text-sm font-bold text-[#0A192F]">
                             {step.title[currentLang]}
                           </h4>
-                          <p className="text-xs text-[#5B6B7C] mt-1">
+                          <p className="text-xs text-[#4A5D73] mt-1 leading-relaxed">
                             {step.desc[currentLang]}
                           </p>
                         </div>
@@ -146,21 +193,23 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
               )}
 
               {/* Important Regulatory Information */}
-              <div className="p-4 bg-[#EAF3FA] border border-[#DCECF7] rounded-xl flex items-start gap-3 text-xs text-[#173A5E]">
-                <AlertCircle className="w-5 h-5 text-[#2D6A9F] shrink-0 mt-0.5" />
+              <div className="p-4 bg-[#112F45]/5 border border-[#CBDCE9] rounded-2xl flex items-start gap-3.5 text-xs text-[#0A192F]">
+                <AlertCircle className="w-5 h-5 text-[#1F4E79] shrink-0 mt-0.5" />
                 <div>
-                  <span className="font-bold block mb-0.5">Important Legal Notice</span>
-                  <p className="text-[#5B6B7C]">{service.importantInfo[currentLang]}</p>
+                  <span className="font-bold block mb-0.5 text-[#0A192F]">
+                    {currentLang === 'ID' ? 'Catatan Regulasi Penting' : currentLang === 'JP' ? '法務・入管規定上の重要留意事項' : 'Important Legal Notice'}
+                  </span>
+                  <p className="text-[#4A5D73] leading-relaxed">{service.importantInfo[currentLang]}</p>
                 </div>
               </div>
 
             </div>
 
-            {/* Sticky Sidebar on Desktop */}
+            {/* Sidebar Column on Desktop */}
             <div className="lg:col-span-4 space-y-6">
               
               {/* Image Card */}
-              <div className="rounded-xl overflow-hidden border border-[#E8EDF1] shadow-2xs">
+              <div className="rounded-2xl overflow-hidden border border-[#CBDCE9] shadow-2xs">
                 <img
                   src={service.imageUrl}
                   alt={service.name[currentLang]}
@@ -169,46 +218,50 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
               </div>
 
               {/* Consultation Card */}
-              <div className="bg-[#FAF9F6] p-6 rounded-xl border border-[#E8EDF1] text-center">
-                <h4 className="text-base font-bold text-[#173A5E] mb-1">
-                  Ready to Proceed?
+              <div className="bg-white p-6 rounded-2xl border border-[#CBDCE9] text-center shadow-xs">
+                <h4 className="text-base font-bold text-[#0A192F] mb-1">
+                  {currentLang === 'ID' ? 'Ajukan Konsultasi Resmi' : currentLang === 'JP' ? '専門窓口へ相談する' : 'Ready to Proceed?'}
                 </h4>
-                <p className="text-xs text-[#5B6B7C] mb-5">
-                  Our immigration attorneys and coordinators will review your candidate portfolio immediately.
+                <p className="text-xs text-[#4A5D73] mb-5 leading-relaxed">
+                  {currentLang === 'ID'
+                    ? 'Konsultan keimigrasian VPT siap melakukan audit kelayakan dan verifikasi regulasi terhadap dokumen Anda.'
+                    : currentLang === 'JP'
+                    ? '専任コンサルタントが要件審査および手続きスケジュールを迅速に検証いたします。'
+                    : 'Our immigration attorneys and coordinators will review your candidate portfolio immediately.'}
                 </p>
 
                 <button
                   type="button"
                   onClick={() => onRequestConsultation(service)}
-                  className="w-full inline-flex items-center justify-center py-3 px-4 text-xs font-bold uppercase tracking-wider text-white bg-[#173A5E] hover:bg-[#2D6A9F] rounded-lg transition-colors shadow-xs group"
+                  className="w-full inline-flex items-center justify-center py-3.5 px-4 text-xs font-bold uppercase tracking-wider text-white bg-[#112F45] hover:bg-[#1F4E79] rounded-xl transition-all shadow-md hover:shadow-lg group cursor-pointer"
                 >
-                  <span>Request Consultation</span>
+                  <span>{currentLang === 'ID' ? 'Mulai Konsultasi' : currentLang === 'JP' ? '申請相談をリクエスト' : 'Request Consultation'}</span>
                   <ArrowRight className="w-3.5 h-3.5 ml-2 transition-transform group-hover:translate-x-0.5" />
                 </button>
 
-                <a
-                  href="https://wa.me/6281198821234"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block mt-3 text-xs font-semibold text-[#2D6A9F] hover:underline"
+                <button
+                  type="button"
+                  onClick={handleWhatsAppDirect}
+                  className="w-full mt-3 inline-flex items-center justify-center gap-2 py-2.5 px-4 text-xs font-bold text-[#1F4E79] hover:text-[#112F45] bg-[#FAFCFF] hover:bg-[#112F45]/5 border border-[#CBDCE9] rounded-xl transition-colors cursor-pointer"
                 >
-                  Or ask via WhatsApp: +62 811 9882 1234
-                </a>
+                  <MessageSquare className="w-3.5 h-3.5" />
+                  <span>WhatsApp: +62 878 8748 4517</span>
+                </button>
               </div>
 
               {/* Service Details Fast Facts */}
-              <div className="p-4 bg-white rounded-xl border border-[#E8EDF1] text-xs space-y-2">
-                <div className="flex justify-between py-1 border-b border-gray-100">
-                  <span className="text-[#5B6B7C]">Government Body:</span>
-                  <span className="font-semibold text-[#173A5E]">Ditjen Imigrasi / Kemnaker</span>
+              <div className="p-4 bg-white rounded-2xl border border-[#CBDCE9] text-xs space-y-2.5 shadow-2xs">
+                <div className="flex justify-between py-1 border-b border-[#E2EAF1]">
+                  <span className="text-[#4A5D73]">{currentLang === 'ID' ? 'Instansi Terkait:' : 'Government Body:'}</span>
+                  <span className="font-bold text-[#0A192F]">Ditjen Imigrasi / Kemnaker</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-gray-100">
-                  <span className="text-[#5B6B7C]">Japanese Support:</span>
-                  <span className="font-semibold text-[#2D6A9F]">Available</span>
+                <div className="flex justify-between py-1 border-b border-[#E2EAF1]">
+                  <span className="text-[#4A5D73]">{currentLang === 'ID' ? 'Layanan Bahasa Jepang:' : 'Japanese Support:'}</span>
+                  <span className="font-bold text-[#1F4E79]">Available (専任対応)</span>
                 </div>
                 <div className="flex justify-between py-1">
-                  <span className="text-[#5B6B7C]">Delivery Format:</span>
-                  <span className="font-semibold text-[#173A5E]">Official e-Visa / e-ITAS</span>
+                  <span className="text-[#4A5D73]">{currentLang === 'ID' ? 'Format Penerbitan:' : 'Delivery Format:'}</span>
+                  <span className="font-bold text-[#0A192F]">Official e-Visa / e-ITAS</span>
                 </div>
               </div>
 

@@ -13,7 +13,7 @@ export const category7Addons: ServiceCategory = {
     ID: "Layanan pendukung lengkap untuk memenuhi persyaratan administrasi pengajuan visa, legalitas dokumen resmi, dan kenyamanan perjalanan internasional.",
     JP: "ビザ申請の必須添付書類を完備する付帯サポート。大使館公認フライト仮予約（Itinerary）、ホテル宿泊確認書、公認宣誓翻訳（Sworn Translator）、シェンゲン基準クリア海外旅行保険。"
   },
-  imageUrl: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1200&q=80",
+  imageUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80",
   imageAlt: "Sworn legal translation documents and travel itinerary confirmation dossiers",
   services: [
     {

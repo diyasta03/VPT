@@ -54,7 +54,7 @@ export const defaultArcs: FlightArc[] = [
   { id: "flight-sfo-jkt", from: [37.62, -122.38], to: JAKARTA_COORD },
   { id: "flight-sin-jkt", from: [1.36, 103.99], to: JAKARTA_COORD },
   { id: "flight-syd-jkt", from: [-33.95, 151.18], to: JAKARTA_COORD },
-  { id: "flight-cdg-jkt", from: [48.86, 2.35], to: JAKARTA_COORD },
+  { id: "flight-cdg-jkt", from: [20.12, 2.35], to: JAKARTA_COORD },
 ]
 
 // Data Marker Resmi Sinkron dengan ID ServiceCatalogModal
@@ -110,7 +110,7 @@ export const catalogMarkers: CatalogMarker[] = [
   },
   {
     id: "cat-overseas-visa",
-    location: [48.86, 2.35],
+    location: [20.12, 2.35],
     title: "Visa Luar Negeri & Paspor",
     subtitle: "Schengen, UK, US & Paspor WNI",
     iconType: "dot",
@@ -129,12 +129,12 @@ export const catalogMarkers: CatalogMarker[] = [
 export function GlobeFlights({
   onSelectCategory,
   className = "",
-  speed = 0.0018, // Putaran rotasi santai dan elegan
+  speed = 0.0018,
   dark = 0.04,
-  baseColor = [0.96, 0.96, 0.99],
-  markerColor = [0.85, 0.65, 0.18],
+ baseColor = [0.96, 0.96, 0.99],
+  markerColor = [0.06, 0.65, 0.92], // Cyan terang (#0EA5E9) - titik menyala jelas di kanvas
   glowColor = [0.93, 0.94, 0.97],
-  arcColor = [0.85, 0.62, 0.15],
+  arcColor = [0.12, 0.31, 0.47],
 }: GlobeFlightsProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const pointerInteracting = useRef<{ x: number; y: number } | null>(null)

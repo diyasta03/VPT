@@ -13,7 +13,7 @@ export const category6Executive: ServiceCategory = {
     ID: "Layanan VIP bernilai tambah untuk kecepatan proses, kenyamanan perjalanan eksekutif, pendampingan audit resmi, dan penanganan kebutuhan korporasi darurat berkecepatan tinggi.",
     JP: "APECビジネストラベルカード（ABTC）、主要国際空港VIPファストトラック・エスコート、入管・労働監査の専門官同行、最短1営業日の超特急（One Day Service）許認可処理。"
   },
-  imageUrl: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
+  imageUrl: "https://images.unsplash.com/photo-1570710891163-6d3b5c47248b?auto=format&fit=crop&w=800&q=80",
   imageAlt: "Executive business traveler enjoying seamless priority airport fast-track lounge",
   services: [
     {

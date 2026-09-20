@@ -285,12 +285,12 @@ export const siteTranslations = {
       ID: "Terima kasih telah menghubungi Visa Pro Technology. Konsultan senior kami akan mempelajari kebutuhan Anda dan menghubungi kembali dalam waktu 2 jam kerja.",
       JP: "Visa Pro Technologyへのお問い合わせ誠にありがとうございます。担当のシニアコンサルタントより、通常2営業時間以内にご連絡申し上げます。"
     },
-    sendAnother: { EN: "Submit Another Inquiry", ID: "Kirim Pesan Lainnya", JP: "別のお問い合わせを送信する" },
+ sendAnother: { EN: "Submit Another Inquiry", ID: "Kirim Pesan Lainnya", JP: "別のお問い合わせを送信する" },
     officeAddressTitle: { EN: "Head Office — Jakarta", ID: "Kantor Pusat — Jakarta", JP: "ジャカルタ本社所在地" },
     officeAddressDesc: {
-      EN: "Menara BCA, 50th Floor, Grand Indonesia\nJl. M.H. Thamrin No. 1, Jakarta Pusat 10310\nRepublic of Indonesia",
-      ID: "Menara BCA, Lantai 50, Grand Indonesia\nJl. M.H. Thamrin No. 1, Jakarta Pusat 10310\nRepublik Indonesia",
-      JP: "Menara BCA 50階, Grand Indonesia\nJl. M.H. Thamrin No. 1, Jakarta Pusat 10310\nインドネシア共和国"
+      EN: "Menara Astra, 37th Floor\nJl. Jend. Sudirman Kav. 5-6, Jakarta 10220\nRepublic of Indonesia",
+      ID: "Menara Astra, Lantai 37\nJl. Jend. Sudirman Kav. 5-6, Jakarta 10220\nRepublik Indonesia",
+      JP: "Menara Astra 37階\nJl. Jend. Sudirman Kav. 5-6, Jakarta 10220\nインドネシア共和国"
     },
     baliOfficeTitle: { EN: "Bali Regional Office", ID: "Kantor Wilayah Bali", JP: "バリ支社" },
     baliOfficeDesc: {
