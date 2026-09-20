@@ -96,9 +96,7 @@ export const IntroductionSection: React.FC<IntroductionSectionProps> = ({
                 </span>
               </button>
 
-              <span className="text-[11px] font-semibold text-[#5E7287] uppercase tracking-widest bg-white px-3 py-1 rounded-full border border-[#E2EAF1] shadow-2xs">
-                Est. Indonesia • Reg. 2011
-              </span>
+              
             </div>
           </div>
 

@@ -67,7 +67,7 @@ export const HeroPrismaVPT: React.FC<HeroPrismaVPTProps> = ({
     },
     headlineSecondary: {
       EN: "TECHNOLOGY",
-      ID: "TECHNOLOGY",
+      ID: "TEKNOLOGI",
       JP: "TECHNOLOGY",
     },
     tagline: {

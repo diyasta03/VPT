@@ -44,7 +44,7 @@ export const siteTranslations = {
       ID: "Dari menavigasi peraturan terbaru Kementerian Ketenagakerjaan hingga koordinasi biometrik imigrasi dan legalitas korporat, kami memastikan operasional perusahaan Anda berjalan 100% patuh hukum tanpa hambatan.",
       JP: "労働省の最新政令（RPTKA）への適合から入国管理局の生体認証同行、法人の設立・登記変更まで、貴社の事業活動が法規を完全に遵守し、一切の中断なく前進できるよう伴走いたします。"
     },
-    cta: { EN: "Discover VPT →", ID: "Pelajari Lebih Lanjut →", JP: "VPTの理念を見る →" }
+    cta: { EN: "Discover VPT", ID: "Pelajari Lebih Lanjut", JP: "VPTの理念を見る" }
   },
   servicesSection: {
     heading: {
